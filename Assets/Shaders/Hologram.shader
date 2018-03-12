@@ -3,8 +3,9 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_Color ("Color",Color) = (0.0,0.0,0.0,1.0)
+		_Color ("Color", Color) = (0.0,0.0,0.0,1.0)
 		_Speed("Speed", float) = 1.0
+		_Axis("Scan Direction", Vector) = (0.0,1.0,0.0,0.0)
 
 	}
 	SubShader
@@ -50,25 +51,29 @@
 			sampler2D _MainTex;
 			float4 _Color;
 			float _Speed;
-
-			float IsAxis(float3 normal) {
-				if ((normal.x >= -0.001 && normal.x <= 0.001) &&
-					(normal.z >= -0.001 && normal.z <= 0.001) &&
-					((normal.y >= -1.001 && normal.y <= -0.999) ||
-					(normal.y >= 0.999 && normal.y <= 1.001))) {
+			float4 _Axis;
+			
+			float IsAxis(float3 axis, float3 normal) {
+				if (abs(dot(axis, normal)) >= 0.99) {
 					return 1;
 				}
 				return 0;
-			}			
+			}
+			
+			float3 RotateVector(float3 vec) {
+				return vec;
+			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = _Color;
-				if (IsAxis(i.normal) == 1) {
+				float3 axis = normalize(_Axis.xyz);
+				if (IsAxis(axis, i.normal) == 1) {
 					col.a = 0.25;
-					return col;
+				} else {
+					col.a = (sin(i.worldVertex.y * 100 + (_Time.y * _Speed)) > 0)? 1.0: 0.25;
 				}
-				col.a = (sin(i.worldVertex.y * 100 + (_Time.y * _Speed)) > 0)? 1.0: 0.25;
+					
 				//col.a = abs(noise(i.vertex));
 
 				return col;
