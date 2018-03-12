@@ -60,10 +60,6 @@
 				return 0;
 			}
 			
-			float3 RotateVector(float3 vec) {
-				return vec;
-			}
-			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = _Color;
@@ -71,7 +67,8 @@
 				if (IsAxis(axis, i.normal) == 1) {
 					col.a = 0.25;
 				} else {
-					col.a = (sin(i.worldVertex.y * 100 + (_Time.y * _Speed)) > 0)? 1.0: 0.25;
+					float scalar = dot(axis, i.worldVertex.xyz);
+					col.a = (sin(scalar * 100 + (_Time.y * _Speed)) > 0)? 1.0: 0.25;
 				}
 					
 				//col.a = abs(noise(i.vertex));
