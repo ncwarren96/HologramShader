@@ -89,7 +89,7 @@
 				col.a = (col.a + rand(float4(i.worldVertex.xyz * 1, _Time.x / 10000))) / 2;
 				
 				float timeFactor = 2;
-				float timeScalar = max(0.5, 1 - (((_Time.y / 3 + scalar)  % timeFactor) / timeFactor));
+				float timeScalar = min(1, 1.5 - (((_Time.y / 3 + scalar)  % timeFactor) / timeFactor));
 				
 				col.r *= timeScalar;
 				col.g *= timeScalar;
