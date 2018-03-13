@@ -1,4 +1,4 @@
-﻿Shader "Custom/HologramShader"
+Shader "Custom/Better_HologramShader"
 {
 	Properties
 	{
@@ -94,6 +94,7 @@
 				col.a = (col.a + rand(float4(noiseCoord.xyz * 1, _Time.x / 10000))) / 2;
 				
 				float timeFactor = 2;
+				// 1 - (((_Time.y / 3 + scalar) % timeFactor) / timeFactor)
 				float timeScalar = min(1, 1.5 - (((_Time.y / 3 + scalar)  % timeFactor) / timeFactor));
 				
 				col.r *= timeScalar;
