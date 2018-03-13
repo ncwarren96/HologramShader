@@ -4,10 +4,11 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_Color ("Color", Color) = (0.0,0.0,0.0,1.0)
-		_Speed("Scan Line Speed", float) = 1.0
-		_Width("Scan Line Width", float) = 1.0
-		_Percent("Whitespace Percent", Range (0, 1)) = 0.5
-		_Axis("Scan Direction", Vector) = (0.0,1.0,0.0,0.0)
+		_Alpha ("White Space Alpha", Range (0, 1)) = 0.25
+		_Speed ("Scan Line Speed", Float) = 1.0
+		_Width ("Scan Line Width", Float) = 1.0
+		_Percent ("Whitespace Percent", Range (0, 1)) = 0.5
+		_Axis ("Scan Direction", Vector) = (0.0,1.0,0.0,0.0)
 	}
 	SubShader
 	{
@@ -51,6 +52,7 @@
 			
 			sampler2D _MainTex;
 			float4 _Color;
+			float _Alpha;
 			float _Speed;
 			float _Width;
 			float _Percent;
@@ -68,11 +70,11 @@
 				fixed4 col = _Color;
 				float3 axis = normalize(_Axis.xyz);
 				if (IsAxis(axis, i.normal) == 1) {
-					col.a = 0.25;
+					col.a = _Alpha;
 				} else {
 					float scalar = dot(axis, i.worldVertex.xyz);
 					float innerSin = (scalar * 100 + (_Time.y * _Speed)) / (_Width);
-					col.a = (sin(innerSin) > (_Percent * 2 - 1))? 1.0: 0.25;
+					col.a = (sin(innerSin) > (_Percent * 2 - 1))? col.a: _Alpha;
 				}
 					
 				//col.a = abs(noise(i.vertex));
