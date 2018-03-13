@@ -6,6 +6,7 @@
 		_Color ("Color", Color) = (0.0,0.0,0.0,1.0)
 		_Speed("Scan Line Speed", float) = 1.0
 		_Width("Scan Line Width", float) = 1.0
+		_Percent("Whitespace Percent", Range (0, 1)) = 0.5
 		_Axis("Scan Direction", Vector) = (0.0,1.0,0.0,0.0)
 	}
 	SubShader
@@ -52,6 +53,7 @@
 			float4 _Color;
 			float _Speed;
 			float _Width;
+			float _Percent;
 			float4 _Axis;
 			
 			float IsAxis(float3 axis, float3 normal) {
@@ -70,7 +72,7 @@
 				} else {
 					float scalar = dot(axis, i.worldVertex.xyz);
 					float innerSin = (scalar * 100 + (_Time.y * _Speed)) / (_Width);
-					col.a = (sin(innerSin) > 0)? 1.0: 0.25;
+					col.a = (sin(innerSin) > (_Percent * 2 - 1))? 1.0: 0.25;
 				}
 					
 				//col.a = abs(noise(i.vertex));
