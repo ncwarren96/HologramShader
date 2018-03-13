@@ -46,6 +46,10 @@
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = v.uv;
 				o.normal = v.vertexNormal;
+				
+				if (sin(_Time.y * 3) > 0.999 && o.worldVertex.y > 0.25) {
+					o.vertex.x = o.vertex.x - 0.5;
+				}
 
 				return o;
 			}
