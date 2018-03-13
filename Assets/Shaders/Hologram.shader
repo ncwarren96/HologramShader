@@ -69,19 +69,25 @@
 				return 0;
 			}
 			
+			float rand(float4 co){
+				  return (frac(sin(dot(co.xyzw ,float4(12.9898,78.233,43.3432,23.2321))) * 43758.5453)) * 0.5;
+			}
+			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = _Color;
 				float3 axis = normalize(_Axis.xyz);
+				float scalar = dot(axis, i.worldVertex.xyz);
+				
 				if (IsAxis(axis, i.normal) == 1) {
 					col.a = _Alpha;
 				} else {
-					float scalar = dot(axis, i.worldVertex.xyz);
 					float innerSin = (scalar * 100 + (_Time.y * _Speed)) / (_Width);
 					col.a = (sin(innerSin) > (_Percent * 2 - 1))? col.a: _Alpha;
 				}
-					
-				//col.a = abs(noise(i.vertex));
+				
+				col.a = (col.a + rand(float4(i.worldVertex.xyz * 1, _Time.x / 10000))) / 2;
+				
 
 				return col;
 			}
