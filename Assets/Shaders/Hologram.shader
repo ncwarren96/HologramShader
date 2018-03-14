@@ -94,8 +94,15 @@
 				noiseCoord.y = floor(noiseCoord.y * noiseScalar);
 				col.a = rand3(noiseCoord);
 				
+				float3 camDir = normalize(i.worldVertex.xyz - _WorldSpaceCameraPos);
+				float fresnel = 1 - abs(dot(camDir, i.normal));
+				
+				col.a = max(((fresnel / 1) + col.a / 2) / 2, 0.1);
+				/*col.r = (col.r + fresnel) / 2;
+				col.g = (col.g + fresnel) / 2;
+				//col.b *= fresnel;*/
+				
 				/*float timeFactor = 2;
-				// 1 - (((_Time.y / 3 + scalar) % timeFactor) / timeFactor)
 				float timeScalar = min(1, 1.5 - (((_Time.y / 3 + scalar)  % timeFactor) / timeFactor));
 				
 				col.r *= timeScalar;
