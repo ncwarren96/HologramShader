@@ -1,4 +1,4 @@
-﻿Shader "Custom/HologramShader"
+Shader "Custom/StaticShader"
 {
 	Properties
 	{
