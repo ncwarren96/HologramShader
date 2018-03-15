@@ -4,6 +4,7 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_Color ("Color", Color) = (0.0,0.0,0.0,1.0)
+		_FresnelColor ("_Fresnel Color", Color) = (0.0,0.0,0.0,1.0)
 		_Alpha ("White Space Alpha", Range (0, 1)) = 0.25
 		_Speed ("Scan Line Speed", Float) = 1.0
 		_Width ("Scan Line Width", Float) = 1.0
@@ -56,6 +57,7 @@
 			
 			sampler2D _MainTex;
 			float4 _Color;
+			float4 _FresnelColor;
 			float _Alpha;
 			float _Speed;
 			float _Width;
@@ -97,10 +99,10 @@
 				float3 camDir = normalize(i.worldVertex.xyz - _WorldSpaceCameraPos);
 				float fresnel = 1 - abs(dot(camDir, i.normal));
 				
+				col.r = col.r  * (1 - fresnel) + _FresnelColor.r * fresnel;
+				col.g = col.g  * (1 - fresnel) + _FresnelColor.g * fresnel;
+				col.b = col.b  * (1 - fresnel) + _FresnelColor.b * fresnel;
 				col.a = max(((fresnel / 1) + col.a / 2) / 2, 0.1);
-				/*col.r = (col.r + fresnel) / 2;
-				col.g = (col.g + fresnel) / 2;
-				//col.b *= fresnel;*/
 				
 				/*float timeFactor = 2;
 				float timeScalar = min(1, 1.5 - (((_Time.y / 3 + scalar)  % timeFactor) / timeFactor));
