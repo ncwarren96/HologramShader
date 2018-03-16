@@ -96,13 +96,15 @@
 				noiseCoord.y = floor(noiseCoord.y * noiseScalar);
 				col.a = rand3(noiseCoord);
 				
-				float3 camDir = normalize(i.worldVertex.xyz - _WorldSpaceCameraPos);
-				float fresnel = 1 - abs(dot(camDir, i.normal));
+				float3 posWorld = mul(unity_ObjectToWorld, i.worldVertex).xyz;
+				float3 normWorld = mul(unity_ObjectToWorld, float4(i.normal, 0.0)).xyz;
+				float3 camDir = normalize(posWorld - _WorldSpaceCameraPos.xyz);
+				float fresnel = 1 - abs(dot(camDir, normWorld));
 				
-				col.r = col.r  * (1 - fresnel) + _FresnelColor.r * fresnel;
-				col.g = col.g  * (1 - fresnel) + _FresnelColor.g * fresnel;
-				col.b = col.b  * (1 - fresnel) + _FresnelColor.b * fresnel;
-				col.a = max(((fresnel / 1) + col.a / 2) / 2, 0.1);
+				col.r = col.r * (1 - fresnel) + _FresnelColor.r * fresnel;
+				col.g = col.g * (1 - fresnel) + _FresnelColor.g * fresnel;
+				col.b = col.b * (1 - fresnel) + _FresnelColor.b * fresnel;
+				col.a = col.a * (1 - fresnel) + _FresnelColor.a * fresnel / 2; //(max(((fresnel / 1) + col.a / 2) / 2, 0.1));
 				
 				/*float timeFactor = 2;
 				float timeScalar = min(1, 1.5 - (((_Time.y / 3 + scalar)  % timeFactor) / timeFactor));

@@ -77,6 +77,7 @@ Material:
     - _Width: 0.5
     - _ZWrite: 1
     m_Colors:
-    - _Axis: {r: 1, g: -1, b: 0, a: 0}
-    - _Color: {r: 0.06466261, g: 0.62583816, b: 0.6764706, a: 1}
+    - _Axis: {r: 0, g: -1, b: 0, a: 0}
+    - _Color: {r: 0.06466261, g: 0.62583816, b: 0.6764706, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FresnelColor: {r: 0.41579762, g: 0.8897059, b: 0.22896844, a: 0.597}
