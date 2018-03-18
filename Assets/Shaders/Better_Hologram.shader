@@ -9,6 +9,7 @@ Shader "Custom/Better_HologramShader"
 		_Width ("Scan Line Width", Float) = 1.0
 		_Percent ("Whitespace Percent", Range (0, 1)) = 0.5
 		_Axis ("Scan Direction", Vector) = (0.0,1.0,0.0,0.0)
+		_Glitch ("Glitch", Range(0, 1)) = 0.0
 	}
 	SubShader
 	{
@@ -39,6 +40,8 @@ Shader "Custom/Better_HologramShader"
 				float3 normal: NORMAL;
 			};
 
+			float _Glitch;
+
 			v2f vert (appdata v)
 			{
 				v2f o;
@@ -46,10 +49,12 @@ Shader "Custom/Better_HologramShader"
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = v.uv;
 				o.normal = v.vertexNormal;
-				
-				if (sin(_Time.y * 3) > 0.999 && o.worldVertex.y > 0.25) {
-					o.vertex.x = o.vertex.x - 0.5;
+				if(_Glitch > 0){
+					if (sin(_Time.y * 3) > 0.999 && o.worldVertex.y > 0.25) {
+						o.vertex.x = o.vertex.x - _Glitch;
+					}
 				}
+
 
 				return o;
 			}
