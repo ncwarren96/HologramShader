@@ -2,7 +2,7 @@ Shader "Custom/Scan_Lines"
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex ("Texture", 2D) = "black" {}
 		_Color ("Color", Color) = (0.0,0.0,0.0,1.0)
 		_Alpha ("White Space Alpha", Range (0, 1)) = 0.25
 		_Speed ("Scan Line Speed", Float) = 1.0
@@ -105,6 +105,15 @@ Shader "Custom/Scan_Lines"
 				col.r *= timeScalar;
 				col.g *= timeScalar;
 				col.b *= timeScalar;
+				
+				// Handle texture
+				fixed4 textCol = tex2D(_MainTex, i.uv);
+				if (textCol.a > 0) {
+					float value = (textCol.r + textCol.g + textCol.b) / 3;
+					col.r = (value + col.r) / 2;
+					col.g = (value + col.g) / 2;
+					col.b = (value + col.b) / 2;
+				}
 
 				return col;
 			}
