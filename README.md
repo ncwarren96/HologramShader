@@ -9,3 +9,8 @@ Harpreet Mahli
 James Garbagnati
 
 Nicholae Christoffersen
+
+
+Download and open the folder as a Unity project to view.
+A running build is available here:
+Our writeup is available here: https://docs.google.com/document/d/1E-bTD7cPfxlnHJxq1hxL5NZhrzj2ZvGf1sZGAQ2gUkM/edit?usp=sharing
