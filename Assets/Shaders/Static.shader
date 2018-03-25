@@ -1,9 +1,10 @@
-Shader "Custom/StaticShader"
+Shader "Custom/Static"
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex ("Texture", 2D) = "black" {}
 		_Color ("Color", Color) = (0.0,0.0,0.0,1.0)
+		_FresnelColor ("_Fresnel Color", Color) = (0.0,0.0,0.0,1.0)
 		_Alpha ("White Space Alpha", Range (0, 1)) = 0.25
 		_Speed ("Scan Line Speed", Float) = 1.0
 		_Width ("Scan Line Width", Float) = 1.0
@@ -56,6 +57,7 @@ Shader "Custom/StaticShader"
 			
 			sampler2D _MainTex;
 			float4 _Color;
+			float4 _FresnelColor;
 			float _Alpha;
 			float _Speed;
 			float _Width;
@@ -84,23 +86,29 @@ Shader "Custom/StaticShader"
 				float scalar = dot(axis, i.worldVertex.xyz);
 				
 				float noiseScalar = 500;
-				/*float4 noiseCoord = float4(i.worldVertex.xyz, _Time.x / 5000);
-				noiseCoord.x = noiseCoord.x * noiseScalar;
-				noiseCoord.y = floor(noiseCoord.y * noiseScalar);
-				noiseCoord.z = floor(noiseCoord.z * noiseScalar);
-				col.a = rand4(noiseCoord);*/
 				float3 noiseCoord = float3(i.uv.xy, _Time.x / 5000);
 				noiseCoord.x = floor(noiseCoord.x * noiseScalar / 5);
 				noiseCoord.y = floor(noiseCoord.y * noiseScalar);
 				col.a = rand3(noiseCoord);
 				
-				/*float timeFactor = 2;
-				// 1 - (((_Time.y / 3 + scalar) % timeFactor) / timeFactor)
-				float timeScalar = min(1, 1.5 - (((_Time.y / 3 + scalar)  % timeFactor) / timeFactor));
+				float3 posWorld = mul(unity_ObjectToWorld, i.worldVertex).xyz;
+				float3 normWorld = mul(unity_ObjectToWorld, float4(i.normal, 0.0)).xyz;
+				float3 camDir = normalize(posWorld - _WorldSpaceCameraPos.xyz);
+				float fresnel = 1 - abs(dot(camDir, normWorld));
 				
-				col.r *= timeScalar;
-				col.g *= timeScalar;
-				col.b *= timeScalar;*/
+				col.r = col.r * (1 - fresnel) + _FresnelColor.r * fresnel;
+				col.g = col.g * (1 - fresnel) + _FresnelColor.g * fresnel;
+				col.b = col.b * (1 - fresnel) + _FresnelColor.b * fresnel;
+				col.a = col.a * (1 - fresnel) + _FresnelColor.a * fresnel / 2; //(max(((fresnel / 1) + col.a / 2) / 2, 0.1));
+				
+				// Handle texture
+				fixed4 textCol = tex2D(_MainTex, i.uv);
+				if (textCol.a > 0) {
+					float value = (textCol.r + textCol.g + textCol.b) / 3;
+					col.r = (value + col.r) / 2;
+					col.g = (value + col.g) / 2;
+					col.b = (value + col.b) / 2;
+				}
 
 				return col;
 			}
